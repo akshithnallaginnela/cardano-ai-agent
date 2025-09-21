@@ -83,13 +83,22 @@ export const ChatInterface = () => {
               data: { type: 'wallet', data: walletData },
               timestamp: new Date(),
             };
-          } catch (error) {
-            botResponse = {
-              id: (Date.now() + 1).toString(),
-              type: 'bot',
-              content: `Sorry, I couldn't fetch wallet information. Please check the wallet address and try again.`,
-              timestamp: new Date(),
-            };
+          } catch (error: any) {
+            if (error.message.includes('404')) {
+              botResponse = {
+                id: (Date.now() + 1).toString(),
+                type: 'bot',
+                content: `This address hasn't been used on the Cardano preview testnet yet (no transactions or activity). Try this active test address instead: addr_test1qqmwpnc72ts9a7fw2trmc2syfy7khtjgrw9vh2cja3psp4lee858y3kj7qmn3pvfdtfgqjmj99nnypx2eysgx3wpafds78dunz`,
+                timestamp: new Date(),
+              };
+            } else {
+              botResponse = {
+                id: (Date.now() + 1).toString(),
+                type: 'bot',
+                content: `Sorry, I couldn't fetch wallet information: ${error.message}. Please check the wallet address and try again.`,
+                timestamp: new Date(),
+              };
+            }
           }
         }
       } else if (userInput.includes('transaction') || userInput.includes('history')) {
@@ -112,13 +121,22 @@ export const ChatInterface = () => {
               data: { type: 'transactions', data: transactions },
               timestamp: new Date(),
             };
-          } catch (error) {
-            botResponse = {
-              id: (Date.now() + 1).toString(),
-              type: 'bot',
-              content: `Sorry, I couldn't fetch transaction history. Please check the wallet address and try again.`,
-              timestamp: new Date(),
-            };
+          } catch (error: any) {
+            if (error.message.includes('404')) {
+              botResponse = {
+                id: (Date.now() + 1).toString(),
+                type: 'bot',
+                content: `This address hasn't been used on the Cardano preview testnet yet (no transactions). Try this active test address: addr_test1qqmwpnc72ts9a7fw2trmc2syfy7khtjgrw9vh2cja3psp4lee858y3kj7qmn3pvfdtfgqjmj99nnypx2eysgx3wpafds78dunz`,
+                timestamp: new Date(),
+              };
+            } else {
+              botResponse = {
+                id: (Date.now() + 1).toString(),
+                type: 'bot',
+                content: `Sorry, I couldn't fetch transaction history: ${error.message}. Please check the wallet address and try again.`,
+                timestamp: new Date(),
+              };
+            }
           }
         }
       } else {
@@ -236,20 +254,20 @@ export const ChatInterface = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setInput("What's the balance of addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35")}
+            onClick={() => setInput("What's the balance of addr_test1qqmwpnc72ts9a7fw2trmc2syfy7khtjgrw9vh2cja3psp4lee858y3kj7qmn3pvfdtfgqjmj99nnypx2eysgx3wpafds78dunz")}
             className="text-xs border-border hover:border-crypto-blue hover:text-crypto-blue transition-colors"
           >
             <Wallet className="w-3 h-3 mr-1" />
-            Check Test Balance
+            Try Active Address
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setInput("Show me transactions for addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35")}
+            onClick={() => setInput("Show me transactions for addr_test1qqmwpnc72ts9a7fw2trmc2syfy7khtjgrw9vh2cja3psp4lee858y3kj7qmn3pvfdtfgqjmj99nnypx2eysgx3wpafds78dunz")}
             className="text-xs border-border hover:border-crypto-blue hover:text-crypto-blue transition-colors"
           >
             <History className="w-3 h-3 mr-1" />
-            Test Transactions
+            Active Transactions
           </Button>
         </div>
       </div>
