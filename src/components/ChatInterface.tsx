@@ -38,8 +38,8 @@ export const ChatInterface = () => {
   }, [messages]);
 
   const extractWalletAddress = (text: string): string | null => {
-    // Look for Cardano wallet addresses (bech32 format starting with addr1)
-    const addressRegex = /addr1[a-z0-9]{98,}/gi;
+    // Look for Cardano wallet addresses (both mainnet addr1 and testnet addr_test1)
+    const addressRegex = /(addr1[a-z0-9]{98,}|addr_test1[a-z0-9]+)/gi;
     const match = text.match(addressRegex);
     return match ? match[0] : null;
   };
@@ -70,7 +70,7 @@ export const ChatInterface = () => {
           botResponse = {
             id: (Date.now() + 1).toString(),
             type: 'bot',
-            content: "Please provide a valid Cardano wallet address (starting with 'addr1') to check the balance. For example: 'What's the balance of addr1q9...'",
+            content: "Please provide a valid Cardano wallet address (mainnet: 'addr1...' or testnet: 'addr_test1...') to check the balance. For example: 'What's the balance of addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35'",
             timestamp: new Date(),
           };
         } else {
@@ -99,7 +99,7 @@ export const ChatInterface = () => {
           botResponse = {
             id: (Date.now() + 1).toString(),
             type: 'bot',
-            content: "Please provide a valid Cardano wallet address to view transaction history. For example: 'Show me transactions for addr1q9...'",
+            content: "Please provide a valid Cardano wallet address to view transaction history. For example: 'Show me transactions for addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35'",
             timestamp: new Date(),
           };
         } else {
@@ -125,7 +125,7 @@ export const ChatInterface = () => {
         botResponse = {
           id: (Date.now() + 1).toString(),
           type: 'bot',
-          content: "I can help you with Cardano blockchain queries! Try asking about:\n\n• Wallet balances: 'What's the balance of addr1q9...'\n• Transaction history: 'Show me transactions for addr1q9...'\n\nPlease provide a valid Cardano wallet address for me to help you.",
+          content: "I can help you with Cardano blockchain queries! Try asking about:\n\n• Wallet balances: 'What's the balance of addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35'\n• Transaction history: 'Show me transactions for addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35'\n\nI support both mainnet (addr1...) and testnet (addr_test1...) addresses.",
           timestamp: new Date(),
         };
       }
@@ -236,20 +236,20 @@ export const ChatInterface = () => {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setInput("What's the balance of addr1q9")}
+            onClick={() => setInput("What's the balance of addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35")}
             className="text-xs border-border hover:border-crypto-blue hover:text-crypto-blue transition-colors"
           >
             <Wallet className="w-3 h-3 mr-1" />
-            Check Balance
+            Check Test Balance
           </Button>
           <Button
             variant="outline"
             size="sm"
-            onClick={() => setInput("Show me transactions for addr1q9")}
+            onClick={() => setInput("Show me transactions for addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35")}
             className="text-xs border-border hover:border-crypto-blue hover:text-crypto-blue transition-colors"
           >
             <History className="w-3 h-3 mr-1" />
-            Transaction History
+            Test Transactions
           </Button>
         </div>
       </div>
