@@ -1,0 +1,2 @@
+export const BLOCKFROST_API_KEY = "previewaFC4bilw3rbPc1R7Sw330872AzuvUpDn"; // unchanged
+export const TESTNET_ADDRESS = "addr_test1wp380l040jnqz0npttmw5t453gd075nh7axsqwctf9nxydqgx7x35"; // <-- Replace with your new testnet address
