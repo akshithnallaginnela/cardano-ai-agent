@@ -46,8 +46,73 @@ npm install
 
 ### 3. Run Development Server
 
-``` sh
+If you see an error like `'vite' is not recognized as an internal or external command`, you need to install Vite:
+
+```sh
+npm install vite --save-dev
+```
+or install it globally:
+```sh
+npm install -g vite
+```
+
+Then start the development server:
+
+```sh
+npx vite
+```
+or, if installed globally:
+```sh
+vite
+```
+
+------------------------------------------------------------------------
+
+## 🏁 Quick Start Commands
+
+```sh
+# Install dependencies
+npm install
+
+# Start Node.js backend
 npm start
+
+# (If using Vite frontend)
+npm install vite --save-dev   # or: npm install -g vite
+npx vite                     # or: vite
+```
+
+------------------------------------------------------------------------
+
+## 🏃 Commands to Run the Program
+
+### For Node.js Backend
+
+```sh
+npm install
+npm start
+```
+
+### For Vite Frontend
+
+If you haven't already, install Vite (locally or globally):
+
+```sh
+npm install vite --save-dev
+```
+or
+```sh
+npm install -g vite
+```
+
+Then run the development server:
+
+```sh
+npx vite
+```
+or, if installed globally:
+```sh
+vite
 ```
 
 ------------------------------------------------------------------------
