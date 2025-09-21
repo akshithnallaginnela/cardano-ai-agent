@@ -47,6 +47,14 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        // Crypto-specific colors
+        crypto: {
+          blue: "hsl(var(--crypto-blue))",
+          purple: "hsl(var(--crypto-purple))",
+          cyan: "hsl(var(--crypto-cyan))",
+          success: "hsl(var(--crypto-success))",
+          warning: "hsl(var(--crypto-warning))",
+        },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",
@@ -62,6 +70,16 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      backgroundImage: {
+        'gradient-primary': 'var(--gradient-primary)',
+        'gradient-card': 'var(--gradient-card)',
+        'gradient-hero': 'var(--gradient-hero)',
+      },
+      boxShadow: {
+        'glow-blue': 'var(--glow-blue)',
+        'glow-purple': 'var(--glow-purple)',
+        'border-glow': 'var(--border-glow)',
       },
       keyframes: {
         "accordion-down": {
