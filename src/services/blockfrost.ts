@@ -119,8 +119,8 @@ class BlockfrostService {
   public async getAddressInfo(address: string): Promise<AddressInfo> {
     try {
       console.log(`Fetching info for address: ${address}`);
-      
-      // First, get the address info
+
+      // Get the address info - this already contains the total balance
       const addressInfo = await this.makeRequest<{
         address: string;
         amount: WalletBalance[];
@@ -128,49 +128,16 @@ class BlockfrostService {
         type: string;
         script: boolean;
       }>(`/addresses/${address}`);
-      
+
       console.log('Address info received:', addressInfo);
-      
-      // Then get the UTXOs
-      const addressUtxos = await this.makeRequest<Array<{ amount: WalletBalance[] }>>(
-        `/addresses/${address}/utxos`
-      );
-      
-      console.log('UTXOs received:', addressUtxos);
 
-      // Calculate total amounts from all UTXOs
-      const amountMap = new Map<string, bigint>();
-      
-      // Initialize with the amounts from addressInfo
-      if (addressInfo.amount) {
-        addressInfo.amount.forEach(asset => {
-          amountMap.set(asset.unit, BigInt(asset.quantity));
-        });
-      }
-      
-      // Add amounts from UTXOs
-      if (Array.isArray(addressUtxos)) {
-        addressUtxos.forEach(utxo => {
-          if (utxo.amount && Array.isArray(utxo.amount)) {
-            utxo.amount.forEach(asset => {
-              const current = amountMap.get(asset.unit) || BigInt(0);
-              amountMap.set(asset.unit, current + BigInt(asset.quantity));
-            });
-          }
-        });
-      }
-
-      // Convert back to the expected format
-      const totalAmounts = Array.from(amountMap.entries()).map(([unit, quantity]) => ({
-        unit,
-        quantity: quantity.toString()
-      }));
-
+      // The address info already contains the correct total balance
+      // No need to fetch UTXOs as they would double-count the amounts
       const result = {
         ...addressInfo,
-        amount: totalAmounts
+        amount: addressInfo.amount || []
       };
-      
+
       console.log('Processed address info:', result);
       return result;
     } catch (error) {
@@ -217,13 +184,16 @@ class BlockfrostService {
           
           // Get UTXOs for this transaction to determine the amounts
           try {
-            const utxos = await this.makeRequest<any[]>(`/txs/${tx_hash}/utxos`);
-            
+            const utxos = await this.makeRequest<{
+              inputs: Array<{ address: string; amount: WalletBalance[] }>;
+              outputs: Array<{ address: string; amount: WalletBalance[] }>;
+            }>(`/txs/${tx_hash}/utxos`);
+
             // Calculate total output amount for this address
             if (utxos && utxos.outputs) {
               const outputAmounts = new Map<string, bigint>();
-              
-              utxos.outputs.forEach((output: any) => {
+
+              utxos.outputs.forEach((output) => {
                 if (output.address === address && output.amount) {
                   output.amount.forEach((asset: WalletBalance) => {
                     const current = outputAmounts.get(asset.unit) || BigInt(0);
@@ -231,7 +201,7 @@ class BlockfrostService {
                   });
                 }
               });
-              
+
               // Update the transaction with the calculated amounts
               txDetails.output_amount = Array.from(outputAmounts.entries()).map(([unit, quantity]) => ({
                 unit,
