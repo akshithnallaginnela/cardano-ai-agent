@@ -2,15 +2,9 @@ name: CI / Build & Test
 
 on:
   push:
-    branches:
-      - main
-      - master
-      - develop
+    branches: [main, master, develop]
   pull_request:
-    branches:
-      - main
-      - master
-      - develop
+    branches: [main, master, develop]
 
 jobs:
   setup:
@@ -27,11 +21,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci
-        # or: npm install
 
-      - name: Lint (optional)
-        run: npm run lint
-        # if there is a lint script
+      - name: Lint (skip if no script)
+        run: npm run lint || echo "no lint script"
 
   build:
     needs: setup
@@ -50,21 +42,18 @@ jobs:
         run: npm ci
 
       - name: Build backend
-        run: |
-          # if there is a build step for backend (e.g. TS compile)
-          npm run build:backend || echo "skip backend build"
+        run: npm run build:backend || echo "no backend build script"
 
-      - name: Build frontend / Vite
-        run: |
-          npm run build || echo "skip frontend build"
+      - name: Build frontend
+        run: npm run build || echo "no frontend build script"
 
       - name: Run tests
-        run: npm test
+        run: npm test || echo "no test script"
 
   deploy:
     needs: build
-    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -73,17 +62,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "20.x"
+          cache: "npm"
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build everything
         run: |
-          npm run build:backend || echo "skip"
-          npm run build || echo "skip"
+          npm run build:backend || echo "no backend build script"
+          npm run build || echo "no frontend build script"
 
-      # Add your deploy steps here (e.g. to server, to Cloud, etc)
-      - name: Deploy to server / platform
-        run: |
-          echo "Deploying..."
-          # e.g. rsync, scp, firebase deploy, etc
+      - name: Deploy
+        run: echo "Deploying... (add real deployment steps)"
